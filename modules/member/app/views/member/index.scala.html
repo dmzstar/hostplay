@@ -1,0 +1,32 @@
+@_sidebar_brand = { <span>Member</span>}
+@_sidebar_dashboard = { Workspace }
+@_sidebar_body = {
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+
+<!-- Heading -->
+<div class="sidebar-heading">
+    内容管理
+</div>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>分类</span></a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="#">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>文章</span></a>
+</li>
+
+}
+@_sidebar = {
+
+    @adminboot._sidebar.main(brand = _sidebar_brand,dashboard = _sidebar_dashboard,body=_sidebar_body)
+
+}
+
+@adminboot.layout("member",sidebar = _sidebar)

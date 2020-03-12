@@ -1,0 +1,41 @@
+@import utils.res._
+
+@(title:String="CodedevPorts",moreHead:Html = Html(""),jquery:Html = Jquery.core,moreBottom:Html=Html(""))(content: Html)
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>@title</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/assets/blog/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  @moreHead
+
+</head>
+
+<body>
+
+
+@include.topNav()
+
+@content
+
+@include.footer()
+
+  <!-- Bootstrap core JavaScript -->
+  @jquery
+  @***<script src="/assets/blog/vendor/jquery/jquery.min.js"></script>**@
+  <script src="/assets/blog/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  @moreBottom
+
+</body>
+
+</html>

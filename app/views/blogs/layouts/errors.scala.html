@@ -1,0 +1,13 @@
+@this()
+@(form:Form[_],msgPrefix:String="model")(implicit mp: MessagesProvider)
+
+<div class="alert" style="color:red;">
+    <ul>
+@for(error <- form.errors){
+    <li>@mp.messages(msgPrefix + "." + error.key) : @mp.messages(error.message)
+    </li>
+}
+<ul>
+</div>
+
+

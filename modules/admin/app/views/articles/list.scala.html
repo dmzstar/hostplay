@@ -1,0 +1,49 @@
+@import helper._
+@import views.html.blogs.layouts._
+@import models.blogs.ArticleCategory
+
+@()(implicit requestHeader:RequestHeader,
+  messagesProvider: MessagesProvider,flash: Flash)
+
+
+@moreHead = {
+<link href="/assets/blog/css/blog-post.css" rel="stylesheet">
+}
+
+@seed(moreHead=moreHead){
+
+<div class="container">
+
+
+    <div class="btn-group">
+        <a href="@routes.ArticleCategories.create" class="btn btn-primary">新建</a>
+    </div>
+
+
+    <table class="table">
+
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>代码</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for(c <- ArticleCategory.all){
+        <tr>
+            <td>@c.name</td>
+            <td>@c.code</td>
+            <td>
+                <a href="@routes.ArticleCategories.edit(c.id)">编辑</a>
+                <a href="@routes.ArticleCategories.delete(c.id)">删除</a>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+}

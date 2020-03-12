@@ -1,0 +1,12 @@
+# https://www.playframework.com/documentation/latest/ScalaI18N
+model.title=标题
+model.details=内容
+error.required=不能为空
+
+
+
+blog.title=标题
+blog.details=内容
+
+comment.title=标题
+comment.details=内容

@@ -1,0 +1,57 @@
+@import helper._
+
+@()(implicit requestHeader:RequestHeader,messagesProvider: MessagesProvider,flash: Flash)
+
+@layout("登录"){
+
+<!-- Outer Row -->
+<div class="row justify-content-center">
+
+  <div class="col-xl-10 col-lg-12 col-md-9">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+          <div class="col-lg-6">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+              </div>
+              @helper.form(action=routes.Users.login,'class -> "user",'id -> "loginForm"){
+              <div class="form-group">
+                <input type="text" class="form-control form-control-user" id="usernameInput" name="username" placeholder="用户名/邮箱">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control form-control-user" id="passwordInput" name="password" placeholder="密码">
+              </div>
+              <div class="form-group">
+                <div class="custom-control custom-checkbox small">
+                  <input type="checkbox" class="custom-control-input" id="customCheck">
+                  <label class="custom-control-label" for="customCheck">记住我</label>
+                </div>
+              </div>
+              <a href="javascript:void(0)" onclick="$('#loginForm').submit();" class="btn btn-primary btn-user btn-block">
+                登录
+              </a>
+              @CSRF.formField
+              }
+              <hr>
+              <div class="text-center">
+                <a class="small" href="forgot-password.html">忘记密码?</a>
+              </div>
+              <div class="text-center">
+                <a class="small" href="@routes.Users.signinPage">创建帐户!</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+}

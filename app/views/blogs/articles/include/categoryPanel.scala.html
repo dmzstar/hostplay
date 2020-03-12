@@ -1,0 +1,16 @@
+@import models.blogs.ArticleCategory
+
+<div class="card my-4">
+    <h5 class="card-header">分类</h5>
+    <div class="card-body">
+
+            <ul>
+            @for(c <- ArticleCategory.all){
+                <li>
+                    <a href="@routes.Articles.listByCategory(c.id)">@c.name</a>
+                </li>
+            }
+            </ul>
+
+    </div>
+</div>
