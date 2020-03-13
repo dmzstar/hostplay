@@ -26,7 +26,7 @@ GET /articles/:q controllers.Articles.show(q:String)
 #GET /article-categories/create controllers.ArticleCategories.create
 #GET /article-categories/:id controllers.ArticleCategories.edit(id:Long)
 
-->      /article-categories                        controllers.ArticleCategoriesRouter
+->      /admin                 controllers.admin.AdminRouter
 
 POST /blogs/articles/comment controllers.Articles.comment
 POST /articles/comment/:id/replay controllers.Articles.replayComment(id:java.lang.Long)
@@ -66,6 +66,9 @@ GET  /password/forgot controllers.Users.passwordForgotPage
 GET  /password/reset controllers.Users.passwordResetPage
 
 GET /404 controllers.Errors._404
+
+
+GET /:page controllers.PageController.loadPage(page:String)
 
 
 #-> /adminboot adminBoot.Routes

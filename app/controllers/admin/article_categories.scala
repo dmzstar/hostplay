@@ -7,6 +7,8 @@ import models.blogs.ArticleCategory
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
+
+/**
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 import play.api.routing.sird._
@@ -19,6 +21,7 @@ class ArticleCategoriesRouter @Inject() (controller: ArticleCategories) extends 
     case DELETE(p"/edit/$id") => controller.delete(id.toLong)
   }
 }
+ */
 
 @Singleton
 class ArticleCategories @Inject()(implicit flashingCache:FlashingCache,

@@ -71,6 +71,7 @@ libraryDependencies ++= Common.testDeps
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.weifan.ferriercontent.controllers._"
+TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._")
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.weifan.ferrierblog.binders._"
