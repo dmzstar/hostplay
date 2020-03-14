@@ -12,7 +12,6 @@ scalacOptions ++= Seq("-deprecation","-feature","-language:implicitConversions")
 //lazy val front = (project in file("modules/front")).enablePlugins(PlayScala)
 //lazy val admin = (project in file("modules/admin-boot")).enablePlugins(PlayScala)
 lazy val domain = (project in file("modules/domain")).enablePlugins(PlayScala,PlayEbean)
-
 lazy val upload = (project in file("modules/upload")).enablePlugins(PlayScala)
 
 /**

@@ -3,6 +3,7 @@ package controllers
 import javax.inject._
 import play.api.http.{DefaultHttpErrorHandler, DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api._
+import play.api.i18n.{I18nSupport, MessagesProvider}
 import play.api.mvc._
 import play.api.mvc.Results.{NotFound, _}
 import play.api.routing.Router
@@ -10,13 +11,34 @@ import play.core.WebCommands
 
 import scala.concurrent._
 
+class ForbiddenException extends RuntimeException
+
 @Singleton
 class ErrorHandler @Inject()(
                               env: Environment,
                               config: Configuration,
                               sourceMapper: OptionalSourceMapper,
-                              router: Provider[Router]
+                              router: Provider[Router],
                             ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
+
+
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onServerError")
+    super.onServerError(request,exception)
+    /**
+    if(exception.isInstanceOf[ForbiddenException]) {
+      Future.successful {
+        Results.Ok(views.html.secs.login())
+      }
+    }else{
+      super.onServerError(request,exception)
+    }*/
+  }
+
+  override protected def onDevServerError(request: RequestHeader, exception: UsefulException): Future[Result] = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onDevServerError")
+    super.onDevServerError(request, exception)
+  }
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
     Future.successful(
@@ -24,7 +46,25 @@ class ErrorHandler @Inject()(
     )
   }
 
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onClientError")
+    super.onClientError(request, statusCode, message)
+  }
+
+  override protected def onOtherClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onOtherClientError")
+    super.onOtherClientError(request, statusCode, message)
+  }
+
+  override protected def onBadRequest(request: RequestHeader, message: String): Future[Result] = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onBadRequest")
+    Future.successful(
+      BadRequest("Got a bad request.")
+    )
+  }
+
   override def onForbidden(request: RequestHeader, message: String) = {
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> onForbidden")
     Future.successful(
       Forbidden("You're not allowed to access this resource.")
     )
@@ -47,6 +87,16 @@ class Errors @Inject()(cc: ControllerComponents) extends AbstractController(cc){
 }
 
 
+@Singleton
+class DefaultLoginController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with I18nSupport{
+
+  def onForbidden = Action { implicit request =>
+    Redirect(routes.Users.loginPage())
+  }
+
+}
+
+
 
 
 class MyRequestHandler @Inject()(
@@ -56,7 +106,8 @@ class MyRequestHandler @Inject()(
                                            errorHandler: HttpErrorHandler,
                                            configuration: HttpConfiguration,
                                            filters: HttpFilters,
-                                           action:DefaultActionBuilder
+                                           action:DefaultActionBuilder,
+                                           defaultLoginController: DefaultLoginController
                                          ) extends DefaultHttpRequestHandler(
   webCommands,
   optionalDevContext,
@@ -69,7 +120,8 @@ class MyRequestHandler @Inject()(
   override def handlerForRequest(request: RequestHeader): (RequestHeader, Handler) = {
     request.uri match {
       case s if(s.startsWith("/admin") || s.startsWith("/member")) => {
-        request.session.get("loginUser").map(u => super.handlerForRequest(request)).getOrElse(request, action(Results.Unauthorized))
+        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handlerForRequest match admin")
+        request.session.get("loginUser").map(u => super.handlerForRequest(request)).getOrElse(request,defaultLoginController.onForbidden)
       }
       case _                 => super.handlerForRequest(request)
     }
