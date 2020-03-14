@@ -1,9 +1,11 @@
 name := """hostplay"""
 organization := "com.weifan"
 maintainer := "dmzstar@weifan.com"
-version := "1.0-SNAPSHOT"
+version := "0.1-SNAPSHOT"
 
 Common.settings
+
+scalacOptions ++= Seq("-deprecation","-feature","-language:implicitConversions")
 
 //lazy val root = (project in file(".")).enablePlugins(PlayScala,PlayMinimalJava,PlayEbean)
 

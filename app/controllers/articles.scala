@@ -7,6 +7,7 @@ import javax.inject.{Inject, Singleton}
 import models.blogs.{Article, ArticleCategory, ArticleComment, ArticleDraft}
 import models.users.User
 import common.uploads.UploadComponents
+import hostplay.mvc._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import play.api.libs.json.Json
@@ -14,19 +15,19 @@ import play.api.mvc._
 import secs._
 import utils.data.ActionMode
 
-
-
-trait JavaConvertersSupport{
-
-  import collection.JavaConverters._
-  implicit def jlistToScalaList[T](list:java.util.List[T]):List[T] = list.asScala.toList
-
-  class DataList[T](val list:List[T])
-  object DataList{
-    implicit def to[T](list:java.util.List[T]) = new DataList(list)
-  }
-
-}
+/**
+ * trait JavaConvertersSupport{
+ **
+ import scala.jdk.CollectionConverters._
+  *implicit def jlistToScalaList[T](list:java.util.List[T]):List[T] = list.asScala.toList
+ **
+ class DataList[T](val list:List[T])
+  *object DataList{
+    *implicit def to[T](list:java.util.List[T]) = new DataList(list)
+  *}
+ **
+ }
+ */
 
 object Articles{
 
@@ -420,7 +421,7 @@ class Articles @Inject()(flashingCache:FlashingCache,
         val fileSize    = picture.fileSize
         val contentType = picture.contentType
 
-        val rndName = System.nanoTime() + "" + filename
+        val rndName = s"${System.nanoTime()}$filename"
 
         picture.ref.copyTo(Paths.get(uploadComponents.baseDir + "/" + rndName),false)
 

@@ -1,6 +1,6 @@
 package controllers.admin
 
-import controllers.{FlashingCache, JavaConvertersSupport}
+import controllers.FlashingCache
 import controllers.secs.CheckLoginAction
 import javax.inject.{Inject, Singleton}
 import models.blogs.ArticleCategory
@@ -8,19 +8,21 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 
-/**
-import play.api.routing.Router.Routes
-import play.api.routing.SimpleRouter
-import play.api.routing.sird._
+import hostplay.mvc._
 
-class ArticleCategoriesRouter @Inject() (controller: ArticleCategories) extends SimpleRouter {
-  override def routes: Routes = {
-    case GET(p"/") => controller.list
-    case GET(p"/create") => controller.create
-    case GET(p"/edit/$id") => controller.edit(id.toLong)
-    case DELETE(p"/edit/$id") => controller.delete(id.toLong)
-  }
-}
+/**
+ * import play.api.routing.Router.Routes
+*import play.api.routing.SimpleRouter
+*import play.api.routing.sird._
+ **
+ class ArticleCategoriesRouter @Inject() (controller: ArticleCategories) extends SimpleRouter {
+  *override def routes: Routes = {
+    *case GET(p"/") => controller.list
+    *case GET(p"/create") => controller.create
+    *case GET(p"/edit/$id") => controller.edit(id.toLong)
+    *case DELETE(p"/edit/$id") => controller.delete(id.toLong)
+  *}
+*}
  */
 
 @Singleton

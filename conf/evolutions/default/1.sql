@@ -82,6 +82,19 @@ create table blog_category (
   constraint pk_blog_category primary key (id)
 );
 
+create table page (
+  id                            bigint auto_increment not null,
+  template_id                   bigint,
+  constraint uq_page_template_id unique (template_id),
+  constraint pk_page primary key (id)
+);
+
+create table page_template (
+  id                            bigint auto_increment not null,
+  name                          varchar(255),
+  constraint pk_page_template primary key (id)
+);
+
 create table roles (
   id                            bigint auto_increment not null,
   name                          varchar(255),
@@ -128,6 +141,8 @@ alter table article_draft add constraint fk_article_draft_category_id foreign ke
 create index ix_blog_category_id on blog (category_id);
 alter table blog add constraint fk_blog_category_id foreign key (category_id) references blog_category (id) on delete restrict on update restrict;
 
+alter table page add constraint fk_page_template_id foreign key (template_id) references page_template (id) on delete restrict on update restrict;
+
 
 # --- !Downs
 
@@ -157,6 +172,8 @@ drop index if exists ix_article_draft_category_id;
 alter table blog drop constraint if exists fk_blog_category_id;
 drop index if exists ix_blog_category_id;
 
+alter table page drop constraint if exists fk_page_template_id;
+
 drop table if exists article;
 
 drop table if exists article_category;
@@ -168,6 +185,10 @@ drop table if exists article_draft;
 drop table if exists blog;
 
 drop table if exists blog_category;
+
+drop table if exists page;
+
+drop table if exists page_template;
 
 drop table if exists roles;
 

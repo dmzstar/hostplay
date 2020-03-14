@@ -7,6 +7,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 
+import hostplay.mvc._
+
 /**
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
