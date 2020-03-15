@@ -61,9 +61,6 @@ libraryDependencies += caffeine
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "8.0.0"
 libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "8.0.0"
 
-// https://mvnrepository.com/artifact/org.apache.ant/ant
-libraryDependencies += "org.apache.ant" % "ant" % "1.10.7"
-
 
 
 
