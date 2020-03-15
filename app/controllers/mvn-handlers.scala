@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject._
+import jtools.AntPathMatcher
 import play.api.http.{DefaultHttpErrorHandler, DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api._
 import play.api.i18n.{I18nSupport, MessagesProvider}
@@ -86,6 +87,28 @@ class Errors @Inject()(cc: ControllerComponents) extends AbstractController(cc){
 
 }
 
+@Singleton
+class SecurityComponents @Inject()(config:Configuration){
+
+  import jtools.AntPathMatcher
+
+  val securityConfig = config.get[Configuration]("security")
+
+  val matcher = new AntPathMatcher.Builder().build
+
+
+  def uriAuthedCheck(uri:String):Boolean = {
+    val list = securityConfig.get[Seq[String]]("web.auth.urls")
+    list.exists{ expr =>
+      println(s">>>>>>>>>>>>>>>>>> AuthCheck - expr : $expr, uri : $uri ")
+      val matched = matcher.isMatch(expr,uri)
+      println(s">>>>>>>>>>>>>>>>>> AuthCheck - matched : $matched")
+      matched
+    }
+  }
+
+}
+
 
 @Singleton
 class DefaultLoginController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with I18nSupport{
@@ -107,7 +130,8 @@ class MyRequestHandler @Inject()(
                                            configuration: HttpConfiguration,
                                            filters: HttpFilters,
                                            action:DefaultActionBuilder,
-                                           defaultLoginController: DefaultLoginController
+                                           defaultLoginController: DefaultLoginController,
+                                           securityComponents: SecurityComponents
                                          ) extends DefaultHttpRequestHandler(
   webCommands,
   optionalDevContext,
@@ -118,13 +142,15 @@ class MyRequestHandler @Inject()(
 ) {
 
   override def handlerForRequest(request: RequestHeader): (RequestHeader, Handler) = {
+
     request.uri match {
-      case s if(s.startsWith("/admin") || s.startsWith("/member")) => {
-        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handlerForRequest match admin")
+      case uri if(securityComponents.uriAuthedCheck(uri)) => {
+        println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ handlerForRequest match admin")
         request.session.get("loginUser").map(u => super.handlerForRequest(request)).getOrElse(request,defaultLoginController.onForbidden)
       }
       case _                 => super.handlerForRequest(request)
     }
+
   }
 
 }
