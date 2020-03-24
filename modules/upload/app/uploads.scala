@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 import javax.inject._
 import play.api.{Configuration, Environment, Mode}
-import com.google.inject.AbstractModule
+import com.google.inject.{AbstractModule, Provides}
 
 
 @Singleton
@@ -33,7 +33,9 @@ class UploadComponents @Inject()(env:Environment,
 }
 
 class UploadModule extends AbstractModule {
+
   override def configure() = {
     bind(classOf[UploadComponents]).asEagerSingleton()
   }
+
 }

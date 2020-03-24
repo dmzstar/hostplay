@@ -61,6 +61,11 @@ libraryDependencies += caffeine
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "8.0.0"
 libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "8.0.0"
 
+libraryDependencies += "org.pac4j" %% "play-pac4j" % "9.0.0-RC3"
+libraryDependencies += "org.pac4j" % "pac4j-http" % "4.0.0-RC3"
+
+
+
 
 
 
@@ -77,3 +82,6 @@ TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._")
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.weifan.ferrierblog.binders._"
+
+
+routesGenerator := InjectedRoutesGenerator

@@ -1,14 +1,22 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
+import org.pac4j.core.config.Config
+import org.pac4j.core.profile.{CommonProfile, ProfileManager}
+import org.pac4j.http.client.indirect.FormClient
+import org.pac4j.play.{LogoutController, PlayWebContext}
+import org.pac4j.play.store.PlaySessionStore
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import play.api.libs.mailer.{Email, MailerClient}
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, Call, ControllerComponents}
 import views.html
 
 @Singleton
 class Users @Inject()(cc: ControllerComponents,
+                      sessionStore: PlaySessionStore,
+                      config:Config,
+                      logoutController: LogoutController,
                       mailClient:MailerClient) extends AbstractController(cc) with play.api.i18n.I18nSupport{
 
     case class LoginData(username:String,password:String)
@@ -45,8 +53,31 @@ class Users @Inject()(cc: ControllerComponents,
     }
 
   def loginPage = Action{ implicit request =>
-    Ok(views.html.secs.login())
+    val call:play.api.mvc.Call = Call("POST","/callback")
+    Ok(views.html.secs.login(call))
   }
+
+  /**
+  def pac4jLogout = Action{ implicit request =>
+    logoutController.logout(request)
+    Redirect("/callback")
+  }
+  */
+
+  /**
+  def loginAction = Action{ implicit request =>
+
+    val webContext = new PlayWebContext(request, sessionStore)
+    val profileManager = new ProfileManager[CommonProfile](webContext)
+    val profile = profileManager.get(true)
+
+
+    val client = config.getClients.findClient(classOf[FormClient])
+    Ok("loginSuccess")
+
+  }
+   */
+
 
   def signinPage = Action{ implicit request =>
     Ok(views.html.secs.signin())

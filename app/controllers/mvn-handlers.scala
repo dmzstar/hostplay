@@ -88,23 +88,72 @@ class Errors @Inject()(cc: ControllerComponents) extends AbstractController(cc){
 }
 
 @Singleton
-class SecurityComponents @Inject()(config:Configuration){
+class SecurityComponents2 @Inject()(config:Configuration){
 
   import jtools.AntPathMatcher
 
-  val securityConfig = config.get[Configuration]("security")
+  val securityConfig = config.get[Configuration]("hostplay.security")
 
   val matcher = new AntPathMatcher.Builder().build
 
 
+  import play.api.routing.Router.Routes
+  import play.api.routing.SimpleRouter
+  import play.api.routing.sird._
+
+  class SecurityRouter @Inject() (controller: ArticleCategories) extends SimpleRouter {
+    override def routes: Routes = {
+      case GET(p"/") => controller.list
+      case GET(p"/create") => controller.create
+      case GET(p"/edit/$id") => controller.edit(id.toLong)
+      case DELETE(p"/edit/$id") => controller.delete(id.toLong)
+    }
+  }
+
+
+  case class MatchResult(name:String){
+
+  }
+
+  def uriCheck(uri:String) = {
+
+    val list = securityConfig.get[Map[String,Seq[String]]]("auth.urls")
+
+
+    val result = for(expr <- list;if expr._2.exists( matcher.isMatch(_,uri))) yield MatchResult(expr._1)
+
+    result
+
+    /**
+      println(s">>>>>>>>>>>>>>>>>> Permit - expr : $expr, uri : $uri ")
+      val matched = matcher.isMatch(expr,uri)
+      println(s">>>>>>>>>>>>>>>>>> Permit - matched : $matched")
+      matched
+    */
+  }
+
+  def permitCheck(uri:String):Boolean = {
+    val list = securityConfig.get[Seq[String]]("auth.urls.permit")
+    list.exists{ expr =>
+      println(s">>>>>>>>>>>>>>>>>> Permit - expr : $expr, uri : $uri ")
+      val matched = matcher.isMatch(expr,uri)
+      println(s">>>>>>>>>>>>>>>>>> Permit - matched : $matched")
+      matched
+    }
+  }
+
   def uriAuthedCheck(uri:String):Boolean = {
-    val list = securityConfig.get[Seq[String]]("web.auth.urls")
+    val list = securityConfig.get[Seq[String]]("auth.urls.authed")
     list.exists{ expr =>
       println(s">>>>>>>>>>>>>>>>>> AuthCheck - expr : $expr, uri : $uri ")
       val matched = matcher.isMatch(expr,uri)
       println(s">>>>>>>>>>>>>>>>>> AuthCheck - matched : $matched")
       matched
     }
+  }
+
+  def loginUriCheck(uri:String):Boolean = {
+    true
   }
 
 }
@@ -115,6 +164,10 @@ class DefaultLoginController @Inject()(cc: ControllerComponents) extends Abstrac
 
   def onForbidden = Action { implicit request =>
     Redirect(routes.Users.loginPage())
+  }
+
+  def login = Action{ implicit request =>
+      Ok("Login")
   }
 
 }
@@ -129,9 +182,7 @@ class MyRequestHandler @Inject()(
                                            errorHandler: HttpErrorHandler,
                                            configuration: HttpConfiguration,
                                            filters: HttpFilters,
-                                           action:DefaultActionBuilder,
-                                           defaultLoginController: DefaultLoginController,
-                                           securityComponents: SecurityComponents
+                                           action:DefaultActionBuilder
                                          ) extends DefaultHttpRequestHandler(
   webCommands,
   optionalDevContext,
@@ -142,15 +193,11 @@ class MyRequestHandler @Inject()(
 ) {
 
   override def handlerForRequest(request: RequestHeader): (RequestHeader, Handler) = {
-
-    request.uri match {
-      case uri if(securityComponents.uriAuthedCheck(uri)) => {
-        println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ handlerForRequest match admin")
-        request.session.get("loginUser").map(u => super.handlerForRequest(request)).getOrElse(request,defaultLoginController.onForbidden)
-      }
-      case _                 => super.handlerForRequest(request)
+      super.handlerForRequest(request)
     }
 
-  }
-
 }
+
+
+
+

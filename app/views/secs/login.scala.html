@@ -1,6 +1,7 @@
 @import helper._
+@import play.api.mvc.Call
 
-@()(implicit requestHeader:RequestHeader,messagesProvider: MessagesProvider,flash: Flash)
+@(loginCall:Call)(implicit requestHeader:RequestHeader,messagesProvider: MessagesProvider,flash: Flash)
 
 @layout("登录"){
 
@@ -19,7 +20,7 @@
               <div class="text-center">
                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
               </div>
-              @helper.form(action=routes.Users.login,"class" -> "user","id" -> "loginForm"){
+              @helper.form(action=loginCall,"class" -> "user","id" -> "loginForm"){
               <div class="form-group">
                 <input type="text" class="form-control form-control-user" id="usernameInput" name="username" placeholder="用户名/邮箱">
               </div>
@@ -36,6 +37,7 @@
                 登录
               </a>
               @CSRF.formField
+              <input type="hidden" value="FormClient" name="form_client"/>
               }
               <hr>
               <div class="text-center">

@@ -3,6 +3,13 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
+GET  /loginPage controllers.Users.loginPage
+#POST /loginAction controllers.Users.loginAction
+POST /login controllers.Users.login
+
+POST        /callback                                @org.pac4j.play.CallbackController.callback(request: Request)
+GET         /logout                                  @org.pac4j.play.LogoutController.logout(request: Request)
+
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
@@ -58,9 +65,7 @@ POST /admin/article_categories/:id controllers.ArticleCategories.update(id:Long)
 GET  /signin controllers.Users.signinPage
 GET  /signin/validate_mail controllers.Users.sendSiginValidateMail
 
-GET  /login controllers.Users.loginPage
-POST /login controllers.Users.login
-GET /logout controllers.Users.logout
+#GET /logout controllers.Users.logout
 
 GET  /password/forgot controllers.Users.passwordForgotPage
 GET  /password/reset controllers.Users.passwordResetPage
