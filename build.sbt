@@ -11,6 +11,8 @@ scalacOptions ++= Seq("-deprecation","-feature","-language:implicitConversions")
 
 //lazy val front = (project in file("modules/front")).enablePlugins(PlayScala)
 //lazy val admin = (project in file("modules/admin-boot")).enablePlugins(PlayScala)
+
+lazy val adminboot = (project in file("modules/adminboot")).enablePlugins(PlayScala)
 lazy val domain = (project in file("modules/domain")).enablePlugins(PlayScala,PlayEbean)
 lazy val upload = (project in file("modules/upload")).enablePlugins(PlayScala)
 
@@ -30,11 +32,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala,PlayEbean)
 */
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala,PlayEbean)
-  //.dependsOn(front).aggregate(front)
   .dependsOn(upload).aggregate(upload)
   .dependsOn(domain).aggregate(domain)
-  //.dependsOn(admin).aggregate(admin)
-  //.dependsOn(front).aggregate(front)
+  .dependsOn(adminboot).aggregate(adminboot)
 
 //忽略源码，文档
 //sources in (Compile, doc) := Seq.empty
@@ -71,6 +71,8 @@ libraryDependencies += "org.pac4j" % "pac4j-http" % "4.0.0-RC3"
 
 libraryDependencies ++= Common.testDeps
 
+//PlayKeys.devSettings += ("play.http.router", "adminboot.Routes")
+
 //PlayKeys.externalizeResources := true
 //PlayKeys.externalizeResourcesExcludes += baseDirectory.value / "public" / "uploads"
 
@@ -83,5 +85,6 @@ TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._")
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.weifan.ferrierblog.binders._"
 
+//PlayKeys.devSettings += ("play.http.router", "adminboot.routes")
 
 routesGenerator := InjectedRoutesGenerator

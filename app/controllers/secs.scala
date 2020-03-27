@@ -1,15 +1,21 @@
 package controllers.secs
 
 
+import java.util.Optional
+
 import com.google.inject.{AbstractModule, Provides}
 import javax.inject.{Inject, Singleton}
-import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
+import org.pac4j.core.authorization.authorizer.{IsAuthenticatedAuthorizer, RequireAnyRoleAuthorizer}
 import org.pac4j.core.client.Clients
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.credentials.UsernamePasswordCredentials
+import org.pac4j.core.exception.http.RedirectionAction
 import org.pac4j.core.matching.matcher.PathMatcher
+import org.pac4j.core.profile.UserProfile
+import org.pac4j.core.profile.creator.ProfileCreator
+import org.pac4j.core.redirect.RedirectionActionBuilder
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.play.scala.{DefaultSecurityComponents, SecurityComponents}
 import org.pac4j.play.{CallbackController, LogoutController}
@@ -105,9 +111,17 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     println(s">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> provideFormClient")
 
     val client = new FormClient("/loginPage", new MyPwdAuthor)
+    client.setName("FormClient")
     client.setUsernameParameter("username")
     client.setPasswordParameter("password")
-    client.setCallbackUrl("/callback?client_name=FormClient")
+    /**
+    client.setRedirectionActionBuilder(new RedirectionActionBuilder {
+      override def getRedirectionAction(context: WebContext): Optional[RedirectionAction] = {
+
+      }
+    })
+     */
+    //client.setCallbackUrl("/callback?client_name=FormClient")
     client
 
   }
@@ -125,10 +139,11 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     println(s">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> provideConfig ${i}")
     i += 1
 
-    val clients = new Clients(formClient,new AnonymousClient())
+    val clients = new Clients("/callback",formClient,new AnonymousClient())
     val config = new Config(clients)
 
-    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
+    config.addAuthorizer("isAuthenticated", new IsAuthenticatedAuthorizer[UserProfile]())
+    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[UserProfile]("ROLE_ADMIN"))
     //config.addAuthorizer("custom", new CustomAuthorizer)
     //config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/loginAction$"))
     //config.setHttpActionAdapter(new DemoHttpActionAdapter())

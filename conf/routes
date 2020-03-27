@@ -76,5 +76,5 @@ GET /404 controllers.Errors._404
 GET /:page controllers.PageController.loadPage(page:String)
 
 
-#-> /adminboot adminBoot.Routes
+->  /adminboot adminboot.Routes
 
