@@ -25,6 +25,7 @@ import hostplay.mvc._
 *}
  */
 
+
 @Singleton
 class ArticleCategories @Inject()(implicit flashingCache:FlashingCache,
                          checkLoginAction: CheckLoginAction,

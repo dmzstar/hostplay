@@ -9,6 +9,7 @@ class IndexController @Inject()(cc: ControllerComponents) extends AbstractContro
   import views.html.{admin => Views}
 
   def index() = Action { implicit request =>
+      //Ok(views.html.admin.index())
     Ok(Views.index())
   }
 

@@ -1,0 +1,61 @@
+
+@import helper._
+@import views.html.blogs.layouts._
+@import models.blogs._
+@import controllers.admin.{layout => Layout}
+
+@(editForm:Form[_],categories:List[ArticleCategory])(implicit requestHeader:RequestHeader,
+  messagesProvider: MessagesProvider,flash: Flash)
+
+
+@moreHead = {
+<link href="/assets/blog/css/blog-post.css" rel="stylesheet">
+}
+
+@Layout(moreHead=moreHead){
+
+<div class="container">
+
+  @Html(flash.get("errors"))
+  @Html(flash.get("success"))
+
+ <form>
+
+    <div class="form-group">
+      <label for="category">分类</label>
+      <select id="category" class="form-control" name="category">
+        @for(cat <- categories){
+          <option value="@cat.id">@cat.name</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="title">标题</label>
+      <input type="text" name="title" id="title" class="form-control"/>
+    </div>
+  <div class="form-group">
+    <label for="url">链接</label>
+    <input type="text" name="title" id="url" class="form-control"/>
+  </div>
+    <div class="form-group">
+      <label for="remark">简介</label>
+      <input type="text" class="form-control" id="remark" name="remark" placeholder="">
+    </div>
+    <div class="form-group">
+      <label for="details">正文</label>
+      <textarea class="form-control" rows="5" name="details" id="details"></textarea>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">保存</button>
+    <button class="btn btn-primary">保存草稿</button>
+    <button class="btn btn-primary">发布</button>
+
+    @CSRF.formField
+
+
+ </form>
+
+</div>
+
+}

@@ -1,4 +1,6 @@
-@(title:String,sidebar:Html = _sidebar.main())
+@(title:String = "HostPlay Admin",moreHead:Html= Html(""),
+  moreBody:Html = Html(""),
+  sidebar:Html = _sidebar.main(), topbar:Html = _topbar.main())(implicit content:Html = _content.main())
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +21,8 @@
   <!-- Custom styles for this template-->
   <link href="/adminboot/assets/css/sb-admin-2.min.css" rel="stylesheet">
 
+  @moreHead
+
 </head>
 
 <body id="page-top">
@@ -32,9 +36,10 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
-
-      @_content.main()
-
+    <div id="content">
+      @topbar
+      @content
+    </div>
 
     </div>
     <!-- End of Content Wrapper -->
@@ -68,11 +73,12 @@
 
 
   @for(src <- List("vendor/jquery/jquery.min.js","vendor/bootstrap/js/bootstrap.bundle.min.js"
-      ,"vendor/jquery-easing/jquery.easing.min.js","js/sb-admin-2.min.js","vendor/chart.js/Chart.min.js"
-      ,"js/demo/chart-area-demo.js","js/demo/chart-pie-demo.js")){
+      ,"vendor/jquery-easing/jquery.easing.min.js","js/sb-admin-2.min.js")){
     <!-- Bootstrap core JavaScript-->
     <script src="/adminboot/assets/@src"></script>
   }
+
+  @moreBody
 
 </body>
 

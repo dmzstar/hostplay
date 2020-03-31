@@ -1,0 +1,188 @@
+@import models.blogs.{Article,ArticleCategory}
+@import helper._
+@import utils.res._
+@import utils.FormErrorUtils
+@import utils.secs._
+@import utils.{MsgUtils => msg}
+@import views.html.blogs.layouts._
+
+@import views.html.blogs.articles.{include => Include}
+
+@(article:Article)(implicit requestHeader:RequestHeader,messagesProvider: MessagesProvider,flash: Flash)
+
+@moreHead = {
+  <link href="/assets/blog/css/blog-post.css" rel="stylesheet">
+}
+
+@jquery = {
+  <script src="/assets/javascripts/jquery-1.11.3/jquery.js"></script>
+}
+
+@moreBottom = {
+<link rel="stylesheet" href="/assets/editormd/css/editormd.css" />
+<link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+<script src="/assets/editormd/lib/marked.min.js"></script>
+<script src="/assets/editormd/lib/prettify.min.js"></script>
+<script src="/assets/editormd/lib/raphael.min.js"></script>
+<script src="/assets/editormd/lib/underscore.min.js"></script>
+<script src="/assets/editormd/lib/sequence-diagram.min.js"></script>
+<script src="/assets/editormd/lib/flowchart.min.js"></script>
+<script src="/assets/editormd/editormd.min.js"></script>
+
+<script>
+
+  $(document).ready(function(){
+
+      try{
+      testEditor = editormd.markdownToHTML("test-editormd", {
+      htmlDecode      : "style,script,iframe",  // you can filter tags decode
+      emoji           : true,
+      taskList        : true,
+      tex             : true,  // 默认不解析
+      flowChart       : true,  // 默认不解析
+      sequenceDiagram : true,  // 默认不解析
+    });
+    }catch(e){
+      console.log(e);
+    }
+
+    $('.commentGroup').on('mouseenter',function(){
+      console.log('enter');
+      $(this).css('background-color','yellow');
+    }).on('mouseleave',function(){
+      $(this).css('background-color','white');
+      $(this).find('.commentInput').hide();
+    }).on('click',function(){
+      $(this).find('.commentInput').show();
+    });
+
+    $('.commentGroup .replayCommand').on('click',function(){
+      $(this).closet('form').submit();
+    });
+
+  });
+
+</script>
+
+}
+
+@seed(moreHead=moreHead,jquery=jquery,moreBottom=moreBottom){
+
+<!-- Page Content -->
+<div class="container">
+
+  @tags.breadcrumb{
+    <a class="breadcrumb-item" href="@routes.HomeController.index()">首页</a>
+    <a class="breadcrumb-item" href="@routes.Articles.list">文章</a>
+    <a class="breadcrumb-item active" href="#">正文</a>
+  }
+
+  <div class="row">
+
+    <!-- Post Content Column -->
+    <div class="col-lg-8">
+
+      <!-- Title -->
+      <h1 class="mt-4">@article.title</h1>
+
+      <!-- Date/Time -->
+      <p class="text-right font-weight-light small">
+        <a href="#">@article.createdBy</a> 发表于 @DateUtils.pretty(article.createdOn)
+        @if(Permission.has(article,"edit")){
+          <a href="@routes.Articles.edit(article.id.toString)">编辑</a>
+        }
+        @if(Permission.has(article,"delete")){
+          <a href="@routes.Articles.delete(article.id)">删除</a>
+        }
+      </p>
+
+      <hr>
+
+      <!-- Preview Image -->
+      <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="" style="display:none;" />
+
+      <div id="layout"  class="editor">
+        <div id="test-editormd" >
+          <textarea style="display:none">@article.details</textarea>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Comments Form -->
+
+      @****
+      <div class="card my-4">
+        <h5 class="card-header">发表评论:</h5>
+        <div class="card-body">
+          @if(flash.get("commentErrors") != None){
+          <div class="alert" style="color:red;">
+              @for(e <- FormErrorUtils.fromJson(flash.get("commentErrors").get) ){
+                @msg.v(e.key): @msg.v(e.message)
+              }
+          </div>
+          }
+          @helper.form(action=routes.Articles.comment){
+            <div class="form-group">
+              <textarea class="form-control" rows="3" name="details"></textarea>
+            </div>
+            <input type="hidden" name="articleId" value="@article.id">
+            <button type="submit" class="btn btn-primary text-right">提交</button>
+            @CSRF.formField
+          }
+        </div>
+      </div>
+
+
+
+      @for(comment <- article.listComments){
+
+      <div class="media mb-4 commentGroup">
+        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+        <div class="media-body">
+          <h5 class="mt-0">@comment.createdBy</h5>
+          @comment.details
+
+          @for(replay <- comment.replays().getList){
+          <div class="media mt-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+              <h5 class="mt-0">@replay.createdBy</h5>
+              @replay.details
+            </div>
+          </div>
+          }
+
+          <div class="commentInput" style="display:none;width:80%;">
+            @helper.form(action=routes.Articles.replayComment(comment.id)){
+              <textarea name="details"></textarea>
+              <a href="#" class="replayCommand">提交</a>
+              <input type="submit" value="提交"/>
+              <input type="hidden" value="@article.id" name="articleId"/>
+              @CSRF.formField
+            }
+          </div>
+        </div>
+      </div>
+
+      }
+
+      ***@
+
+
+    </div>
+
+
+    <div class="col-md-4">
+
+      @Include.searchPanel()
+
+      @Include.categoryPanel()
+
+    </div>
+
+  </div>
+
+</div>
+
+}
