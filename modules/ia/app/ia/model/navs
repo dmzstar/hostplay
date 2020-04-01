@@ -1,6 +1,0 @@
-package ia.model.nav
-
-
-case class NavModel(title:String,link:String)
-
-

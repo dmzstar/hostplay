@@ -111,14 +111,14 @@ function serializeObject(form){
 
 }
 
-@Layout(moreHead = moreHead,moreBody = moreBody){
+@body = {
 
+    <div class="container-fluid">
 
-<div class="container">
-    <div id="buttons" class="text-right">
+        <div id="buttons" class="text-right">
 
         @if(mode == ActionMode.create){
-        <input type="submit" value="发布" id="publishNewCommand"/>
+            <button class="btn btn-primary" id="publishNewCommand">发布</button>
         }
         @if(mode == ActionMode.edit){
         <input type="submit" value="发布更新" id="publishUpdateCommand"/>
@@ -128,8 +128,30 @@ function serializeObject(form){
         }
     </div>
 
-    <form id="articleForm">
-        <div class="form-group">
+  <form id="articleForm">
+  <div class="row">
+    <div class="col-sm-9 col-md-9">
+
+                <div class="form-group">
+            <label for="artileForm_title">标题</label>
+            <input type="text" class="form-control" id="artileForm_title" name="title"
+                   value="@article.title"/>
+        </div>
+        @CSRF.formField
+
+    <div class="form-group">
+        <label for="test-editor">正文</label>
+    <div id="test-editor">
+        <textarea id="textValue">@article.details</textarea>
+    </div>
+    </div>
+
+    </div>
+
+
+    <div class="col-sm-3 col-md-3">
+
+                <div class="form-group">
             <label for="artileForm_category">分类</label>
             <select id="artileForm_category" name="category" class="form-control">
                 @for(c <- ArticleCategory.all){
@@ -137,23 +159,32 @@ function serializeObject(form){
                 }
             </select>
         </div>
-        <div class="form-group">
-            <label for="artileForm_title">标题</label>
-            <input type="text" class="form-control" id="artileForm_title" name="title"
-                   value="@article.title"/>
-        </div>
-        <div class="form-group">
-            <label for="artileForm_remark">描述</label>
-            <input type="text" class="form-control" id="artileForm_remark" name="remark"
-                   value="@article.remark"/>
-        </div>
-        @CSRF.formField
-    </form>
 
-    <div id="test-editor">
-        <textarea id="textValue">@article.details</textarea>
+        <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">扩展信息</h6>
+                </div>
+                <div class="card-body">
+
+<div class="form-group">
+  <label for="artileForm_remark">描述</label>
+  <textarea class="form-control" id="artileForm_remark" name="remark"
+                   value="@article.remark"></textarea>
+</div>
+
+                </div>
+        </div>
+
+
     </div>
+  </div>
+
+
+  </form>
 
 </div>
 
+
 }
+
+@Layout(moreHead = moreHead,moreBody = moreBody)(body)

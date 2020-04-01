@@ -1,5 +1,5 @@
 name := """adminboot"""
-//PlayKeys.devSettings += ("play.http.router", "adminboot.routes")
+JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 Common.settings
 
