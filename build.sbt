@@ -65,7 +65,12 @@ libraryDependencies += "org.pac4j" %% "play-pac4j" % "9.0.0-RC3"
 libraryDependencies += "org.pac4j" % "pac4j-http" % "4.0.0-RC3"
 
 
-
+//webjars begin
+// https://mvnrepository.com/artifact/org.webjars/webjars-play
+libraryDependencies += "org.webjars" %% "webjars-play" % "2.8.0"
+libraryDependencies ++= Seq("org.webjars" % "bootstrap" % "4.4.1-1")
+libraryDependencies += "org.webjars" % "bootstrap-multiselect" % "0.9.15"
+//webjars end
 
 
 
@@ -80,7 +85,7 @@ libraryDependencies ++= Common.testDeps
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.weifan.ferriercontent.controllers._"
-TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._")
+TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._","ui.WebUtil")
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.weifan.ferrierblog.binders._"
