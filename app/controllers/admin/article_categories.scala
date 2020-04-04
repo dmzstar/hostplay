@@ -7,42 +7,29 @@ import models.blogs.ArticleCategory
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-
 import hostplay.mvc._
-
-/**
- * import play.api.routing.Router.Routes
-*import play.api.routing.SimpleRouter
-*import play.api.routing.sird._
- **
- class ArticleCategoriesRouter @Inject() (controller: ArticleCategories) extends SimpleRouter {
-  *override def routes: Routes = {
-    *case GET(p"/") => controller.list
-    *case GET(p"/create") => controller.create
-    *case GET(p"/edit/$id") => controller.edit(id.toLong)
-    *case DELETE(p"/edit/$id") => controller.delete(id.toLong)
-  *}
-*}
- */
+import play.core.routing.ReverseRouteContext
 
 
 @Singleton
-class ArticleCategories @Inject()(implicit flashingCache:FlashingCache,
+class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache,
                          checkLoginAction: CheckLoginAction,
                          cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport with JavaConvertersSupport {
 
   import controllers.{routes => routes}
+  import controllers.routes
   import views.html.{admin => Views}
   import views.html.{blogs => BlogViews}
 
   object FormModel{
 
-    case class Data(name:String,code:Option[String])
+    case class Data(parent:Option[String],name:String,code:Option[String])
 
     def bind(implicit request:Request[_]) = form.bindFromRequest
 
     def form = Form(
       mapping(
+              "parent" -> optional(text),
         "name" -> nonEmptyText,
         "code" -> optional(text)
       )(Data.apply)(Data.unapply))
@@ -54,7 +41,10 @@ class ArticleCategories @Inject()(implicit flashingCache:FlashingCache,
   }
 
   def create = Action  { implicit request =>
-    Ok(BlogViews.article_categories.create())
+    val parents = ArticleCategory.all
+    val form = FormModel.form
+    val parentOptions = parents
+    Ok(Views.article_categories.create(form,parents))
   }
 
   def edit(id:Long) = Action  { implicit request =>
@@ -71,6 +61,8 @@ class ArticleCategories @Inject()(implicit flashingCache:FlashingCache,
         entity.name = data.name
         data.code.map(entity.code = _)
         entity.save()
+        //controllers.routes.admin.ArticleCategoriesController
+        controllers.adminboot.routes.A2Controller.a2()
         Redirect(routes.ArticleCategories.create()).flashing("success" -> "创建成功！")
 
       }

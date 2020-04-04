@@ -1,6 +1,6 @@
 package controllers.admin
 
-import controllers.ArticleCategories
+import controllers.admin.ArticleCategoriesController
 import controllers.admin.articles.ArticleController
 import controllers.admin.users.UsersController
 import javax.inject.Inject
@@ -10,7 +10,7 @@ import play.api.routing.sird._
 
 class AdminRouter @Inject() (index:IndexController,
                              articles:ArticleController,
-                             articleCategories: ArticleCategories,
+                             articleCategories: ArticleCategoriesController,
             users: UsersController) extends SimpleRouter {
 
   override def routes: Routes = {

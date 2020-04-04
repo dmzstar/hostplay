@@ -92,4 +92,4 @@ TwirlKeys.templateImports ++= Seq("ui.HelperSymbolFix._","ui.WebUtil")
 
 //PlayKeys.devSettings += ("play.http.router", "adminboot.routes")
 
-routesGenerator := InjectedRoutesGenerator
+//routesGenerator := InjectedRoutesGenerator

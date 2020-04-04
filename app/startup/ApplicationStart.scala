@@ -3,7 +3,7 @@ package startup
 import scala.concurrent.Future
 import javax.inject._
 import org.webjars.play.WebJarsUtil
-import play.api.inject.ApplicationLifecycle
+import play.api.inject.{ApplicationLifecycle, Modules}
 import ui.WebUtil
 
 

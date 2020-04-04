@@ -1,2 +1,4 @@
 GET /assets/*file           controllers.adminboot.Assets.at(path="/public/lib/adminboot/b4admin", file)
 #GET /assets/*file           controllers.Assets.at(path="/public/lib/adminboot/b4admin", file)
+
+GET /a2 controllers.adminboot.A2Controller.a2

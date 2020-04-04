@@ -24,6 +24,8 @@ GET     /blog/*file       controllers.Assets.at(path="/public/blog",file)
 
 GET     /uploads/*file     controllers.Assets.at(path="/uploads",file)
 
+GET /hostplay controllers.HostplayApplication.loadPage
+
 
 GET /articles controllers.Articles.list
 GET /articles/list_by_category/:id controllers.Articles.listByCategory(id:Long)
@@ -33,6 +35,7 @@ GET /articles/:q controllers.Articles.show(q:String)
 #GET /article-categories/create controllers.ArticleCategories.create
 #GET /article-categories/:id controllers.ArticleCategories.edit(id:Long)
 
+GET /admin/article-categories/update controllers.admin.ArticleCategoriesController.update(id:Long)
 ->      /admin                 controllers.admin.AdminRouter
 
 POST /blogs/articles/comment controllers.Articles.comment
