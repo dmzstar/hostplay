@@ -17,21 +17,21 @@ class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache
                          cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport with JavaConvertersSupport {
 
   import controllers.{routes => routes}
-  import controllers.routes
+  import controllers.admin.{routes => Routes}
   import views.html.{admin => Views}
   import views.html.{blogs => BlogViews}
 
   object FormModel{
 
-    case class Data(parent:Option[String],name:String,code:Option[String])
+    case class Data(parent:Option[String],code:String,name:String)
 
     def bind(implicit request:Request[_]) = form.bindFromRequest
 
     def form = Form(
       mapping(
               "parent" -> optional(text),
+        "code" -> nonEmptyText,
         "name" -> nonEmptyText,
-        "code" -> optional(text)
       )(Data.apply)(Data.unapply))
 
   }
@@ -43,27 +43,40 @@ class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache
   def create = Action  { implicit request =>
     val parents = ArticleCategory.all
     val form = FormModel.form
+
+    val fdata = flashingCache.get[Map[String,String]]("formMapping").getOrElse(Map.empty)
+    println("======================= fdata " + fdata)
+    form.bind(fdata)
+
     val parentOptions = parents
-    Ok(Views.article_categories.create(form,parents))
+    val options = parents.map[(String,String)]( a => (a.code -> a.name)).toSeq
+    Ok(Views.article_categories.create(form,parents,options))
   }
 
   def edit(id:Long) = Action  { implicit request =>
-    Ok(BlogViews.article_categories.edit(ArticleCategory.findById(id).get))
+    val parents = ArticleCategory.all
+    val form = FormModel.form
+    val parentOptions = parents
+    val options = parents.map[(String,String)]( a => (a.code -> a.name)).toSeq
+    Ok(Views.article_categories.create(form,parents,options))
   }
 
   def save = Action  { implicit request =>
 
     FormModel.bind.fold(
-      errorForm => Redirect(routes.ArticleCategories.create()).flashing("error" -> "验证错误！"),
+      errorForm => {
+        val flashingMap = errorForm.data + ("error" -> "验证错误！")
+        flashingCache.set("formMapping",errorForm.data)
+        Redirect(Routes.ArticleCategoriesController.create()).flashing(flashingMap.toArray: _*)
+      },
       data => {
 
         val entity = new ArticleCategory()
         entity.name = data.name
-        data.code.map(entity.code = _)
+        //data.code.map(entity.code = _)
+        entity.code = data.code
         entity.save()
-        //controllers.routes.admin.ArticleCategoriesController
-        controllers.adminboot.routes.A2Controller.a2()
-        Redirect(routes.ArticleCategories.create()).flashing("success" -> "创建成功！")
+        Redirect(Routes.ArticleCategoriesController.create()).flashing("success" -> "创建成功！")
 
       }
     )
@@ -80,7 +93,8 @@ class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache
 
         ArticleCategory.findById(id).map{ entity =>
           entity.name = data.name
-          data.code.map(entity.code = _)
+          //data.code.map(entity.code = _)
+          entity.code = data.code
           entity.save()
           Redirect(routes.ArticleCategories.edit(entity.id)).flashing("success" -> "编辑成功！")
         }.getOrElse(NotFound)

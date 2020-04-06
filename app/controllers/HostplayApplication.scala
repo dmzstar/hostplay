@@ -1,8 +1,5 @@
 package controllers
 
-import common.uploads.UploadComponents
-import controllers.secs.CheckLoginAction
-import hostplay.mvc.JavaConvertersSupport
 import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 import play.api.inject.Modules
@@ -15,7 +12,7 @@ class HostplayApplication @Inject()(
                          cc: ControllerComponents) extends AbstractController(cc) {
 
   def loadPage() = Action{
-    Modules.locate(environment,configuration).foreach( println(_))
+    Modules.locate(environment,configuration).foreach(println(_))
     Ok("success")
   }
 

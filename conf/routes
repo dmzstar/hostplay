@@ -35,7 +35,9 @@ GET /articles/:q controllers.Articles.show(q:String)
 #GET /article-categories/create controllers.ArticleCategories.create
 #GET /article-categories/:id controllers.ArticleCategories.edit(id:Long)
 
+GET /admin/article-categories/create controllers.admin.ArticleCategoriesController.create
 GET /admin/article-categories/update controllers.admin.ArticleCategoriesController.update(id:Long)
+GET /admin/article-categories/save controllers.admin.ArticleCategoriesController.save
 ->      /admin                 controllers.admin.AdminRouter
 
 POST /blogs/articles/comment controllers.Articles.comment

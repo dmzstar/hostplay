@@ -44,8 +44,11 @@
   <logger name="io.ebean.docker" level="TRACE"/>
 
   -->
+
+  <!--
   <logger name="org.pac4j" level="TRACE"/>
   <logger name="org.pac4j.play" level="TRACE"/>
+  -->
 
   <root level="WARN">
     <!--<appender-ref ref="ASYNCFILE" />-->

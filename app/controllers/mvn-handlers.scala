@@ -193,8 +193,10 @@ class MyRequestHandler @Inject()(
 ) {
 
   override def handlerForRequest(request: RequestHeader): (RequestHeader, Handler) = {
-      super.handlerForRequest(request)
-    }
+      val r = super.handlerForRequest(request)
+      //println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@requestHandler uri : " + request.uri)
+      r
+  }
 
 }
 

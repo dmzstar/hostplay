@@ -4,6 +4,7 @@ package controllers.secs
 import java.util.Optional
 
 import com.google.inject.{AbstractModule, Provides}
+import controllers.FlashingCacheFilter
 import javax.inject.{Inject, Singleton}
 import org.pac4j.core.authorization.authorizer.{IsAuthenticatedAuthorizer, RequireAnyRoleAuthorizer}
 import org.pac4j.core.client.Clients
