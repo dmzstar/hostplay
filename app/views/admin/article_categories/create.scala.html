@@ -1,5 +1,6 @@
 
 @import helper._
+@import b._
 @import ui.Boostrap4Helper._
 @import views.html.blogs.layouts._
 @import models.blogs._
@@ -48,10 +49,9 @@
       </select>
     </div>
 
-     @helper.select(editForm("parent"), options=options, "_label" -> "Parent", "class" -> "form-control")
-     @helper.inputText(editForm("code"), "_label" -> "Code", "class" -> "form-control")
-     @helper.inputText(editForm("name"), "_label" -> "Name", "class" -> "form-control")
-
+     @b.inputText(editForm("name"), "_label" -> "Name")
+     @b.inputText(editForm("code"), "_label" -> "Code", "class" -> "form-control")
+     @b.inputText(editForm("name"), "_label" -> "Name", "class" -> "form-control")
 
     <button type="submit" class="btn btn-primary">Save</button>
 

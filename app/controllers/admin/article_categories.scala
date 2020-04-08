@@ -1,20 +1,16 @@
 package controllers.admin
 
-import controllers.FlashingCache
-import controllers.secs.CheckLoginAction
+
 import javax.inject.{Inject, Singleton}
 import models.blogs.ArticleCategory
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import hostplay.mvc._
-import play.core.routing.ReverseRouteContext
 
 
 @Singleton
-class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache,
-                         checkLoginAction: CheckLoginAction,
-                         cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport with JavaConvertersSupport {
+class ArticleCategoriesController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport with JavaConvertersSupport {
 
   import controllers.{routes => routes}
   import controllers.admin.{routes => Routes}
@@ -41,12 +37,9 @@ class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache
   }
 
   def create = Action  { implicit request =>
-    val parents = ArticleCategory.all
-    val form = FormModel.form
 
-    val fdata = flashingCache.get[Map[String,String]]("formMapping").getOrElse(Map.empty)
-    println("======================= fdata " + fdata)
-    form.bind(fdata)
+    val parents = ArticleCategory.all
+    val form = FormModel.form.bind(request.flash.data)
 
     val parentOptions = parents
     val options = parents.map[(String,String)]( a => (a.code -> a.name)).toSeq
@@ -66,7 +59,6 @@ class ArticleCategoriesController @Inject()(implicit flashingCache:FlashingCache
     FormModel.bind.fold(
       errorForm => {
         val flashingMap = errorForm.data + ("error" -> "验证错误！")
-        flashingCache.set("formMapping",errorForm.data)
         Redirect(Routes.ArticleCategoriesController.create()).flashing(flashingMap.toArray: _*)
       },
       data => {

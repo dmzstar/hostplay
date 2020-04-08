@@ -1,0 +1,13 @@
+@import helper._
+
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit handler: FieldConstructor, messages: play.api.i18n.MessagesProvider)
+
+@styleClass = @{ args.toMap.get(Symbol("class")).map(_.toString).getOrElse("form-control") }
+@newArgs = @{
+    val m = collection.mutable.Map(args.toMap.toSeq: _*)
+    m += (Symbol("class") -> styleClass)
+    m.toSeq
+}
+
+@helper.inputText(field,newArgs:_*)
+

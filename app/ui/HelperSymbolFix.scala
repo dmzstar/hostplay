@@ -14,6 +14,8 @@ object HelperSymbolFix {
 
 object Boostrap4Helper{
 
+  import views.html.helper.inputText
+
   import views.html.helper.FieldConstructor
   implicit val myFields = FieldConstructor(html.bv4.formGroup.f)
 
