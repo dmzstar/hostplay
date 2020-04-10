@@ -1,0 +1,16 @@
+@import helper._
+
+@(alertMessages:Seq[String] = Seq())(implicit messages: play.api.i18n.MessagesProvider)
+
+<div class="alert alert-danger">
+
+    <ul>
+        @for(m <- alertMessages){
+
+            <li>@m</li>
+
+        }
+    </ul>
+
+</div>
+

@@ -36,14 +36,20 @@ class ArticleCategoriesController @Inject()(cc: ControllerComponents) extends Ab
     Ok(BlogViews.article_categories.list())
   }
 
+  private def bindFormFlashing(implicit request:RequestHeader) = {
+    var form = FormModel.form.bind(request.flash.data)
+    request.flash.get("csrfToken").getOrElse{ form = form.discardingErrors}
+    form
+  }
+
   def create = Action  { implicit request =>
 
     val parents = ArticleCategory.all
-    val form = FormModel.form.bind(request.flash.data)
-
+    val form =  bindFormFlashing
     val parentOptions = parents
     val options = parents.map[(String,String)]( a => (a.code -> a.name)).toSeq
     Ok(Views.article_categories.create(form,parents,options))
+
   }
 
   def edit(id:Long) = Action  { implicit request =>

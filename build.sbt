@@ -66,10 +66,12 @@ libraryDependencies += "org.pac4j" % "pac4j-http" % "4.0.0-RC3"
 
 
 //webjars begin
-// https://mvnrepository.com/artifact/org.webjars/webjars-play
+
 libraryDependencies += "org.webjars" %% "webjars-play" % "2.8.0"
-libraryDependencies ++= Seq("org.webjars" % "bootstrap" % "4.4.1-1")
 libraryDependencies += "org.webjars" % "bootstrap-multiselect" % "0.9.15"
+libraryDependencies ++= Seq("org.webjars" % "bootstrap" % "4.4.1-1")
+libraryDependencies += "org.webjars" % "startbootstrap-sb-admin-2" % "4.0.6"
+
 //webjars end
 
 

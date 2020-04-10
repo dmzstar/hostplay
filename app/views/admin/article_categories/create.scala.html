@@ -18,23 +18,22 @@
 
 <div class="container">
 
+    @{import ui.b4components.Alert._}
+    @b.alert()
+
+    @***
     @flash.get("success").map{ v =>
-    <div style="color:green;">
-        @v
-    </div>
+        <div class="alert alert-success">
+            @v
+        </div>
     }
 
     @flash.get("error").map{ v =>
-    <div style="color:red;">
-        @v
-    </div>
+        <div class="alert alert-danger">
+            @v
+        </div>
     }
-
-    @flash.get("name").map{ v =>
-    <div style="color:red;">
-        @v
-    </div>
-    }
+    ***@
 
  <form action="/admin/article-categories/save">
 

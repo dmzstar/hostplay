@@ -1,8 +1,13 @@
 @import helper._
+@import ui.Boostrap4StyleHelper
 
 @(field: play.api.data.Field, args: (Symbol,Any)*)(implicit handler: FieldConstructor, messages: play.api.i18n.MessagesProvider)
 
-@styleClass = @{ args.toMap.get(Symbol("class")).map(_.toString).getOrElse("form-control") }
+@styleClass = @{
+
+    Boostrap4StyleHelper.styleClass(field,args:_*)
+
+}
 @newArgs = @{
     val m = collection.mutable.Map(args.toMap.toSeq: _*)
     m += (Symbol("class") -> styleClass)
